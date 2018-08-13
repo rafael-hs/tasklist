@@ -15,20 +15,28 @@
                 @foreach($tarefas as $tarefas)
             <div class="panel panel-default" id="lista">
             <div class="panel-body">
-                {{$tarefas->id}}|  {{$tarefas->nomeTarefa}}|{{$tarefas->custo}}|{{$tarefas->dataLimite}}
+                    {{$tarefas->id}}|  {{$tarefas->nomeTarefa}}|{{$tarefas->custo}}|{{$tarefas->dataLimite}}
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default glyphicon glyphicon-trash" ></button>
-                       <a href="{{url("/tarefas/$tarefas->id/editar")}}"> <button type="button" class="btn btn-default glyphicon glyphicon-pencil"></button> </a>
+                  <a href="{{url("/tarefas/$tarefas->id/editar")}}"> <button type="button" nome="editar" class="btn btn-primary glyphicon glyphicon-pencil"></button> </a>
+                  <!--data-toggle="modal"  data-target="#exampleModal" data-whatever="@mdo-->
+                    <button type="button" nome="apagar" class="btn btn-default glyphicon glyphicon-trash" ></button>
                     </div>
             </div>
-            </div>  
-                
+            </div>
                 @endforeach
-         </table>
+         
     </div> 
            
     
-    
+    <script>
+         $('#tarefamodal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var recipient = button.data('whatever')
+        var modal = $(this)
+        modal.find('.modal-title').text('New message to ' + recipient)
+        modal.find('.modal-body input').val(recipient)
+        })
+    </script>
     <script>
         $('#lista').sortable();
     </script>

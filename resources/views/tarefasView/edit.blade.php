@@ -21,7 +21,7 @@
                 <label class="control-label">Data Limite:</label>
                 <input type="text" name="dataLimite" class="col-md-12 form-control"placeholder="Data de Limite">
             </div>
-            <button style="margin-top: 5px; float:right;" class="btn btn-primary">Salvar</button>
+            <button style="margin-top: 5px; float:right;" class="btn btn-primary">Editar</button>
             
         </form>
         

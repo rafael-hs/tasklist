@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 
 class TarefasController extends Controller
 {
-    private $tarefa;
 
-    $tarefa = new Tarefa();
+    private $tarefa;
+    
+    
+
+    public function __construct()
+    {
+       tarefa = new Tarefa();
+    }
+
     public function index()
     {
         $list_tarefas = Tarefa::all();
@@ -38,6 +45,6 @@ class TarefasController extends Controller
 
     public function editarView($id)
     {
-        var_dump($this->tarefa->find($id)->nome);
+        var_dump(tarefa->find($id)->nome);
     }
 }
