@@ -9,4 +9,5 @@ Route::group(["prefix" => "tarefas"], function() {
     Route::get("/novo","TarefasController@novoView");
     Route::get("/{id}/editar","TarefasController@editarView");
     Route::post("/store","TarefasController@store");
+    Route::put("/{id}/update","TarefasController@update");
 });

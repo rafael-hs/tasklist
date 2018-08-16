@@ -8,15 +8,6 @@ use Illuminate\Http\Request;
 class TarefasController extends Controller
 {
 
-    private $tarefa;
-    
-    
-
-    public function __construct()
-    {
-       tarefa = new Tarefa();
-    }
-
     public function index()
     {
         $list_tarefas = Tarefa::all();
@@ -45,6 +36,29 @@ class TarefasController extends Controller
 
     public function editarView($id)
     {
-        var_dump(tarefa->find($id)->nome);
+        //recuperar a minha tarefa pelo seu id
+       $tarefa =Tarefa::find($id);
+       return view('tarefasView.edit',['tarefa'=>$tarefa]);
     }
+
+    public function update(Request $request, $id)
+    {
+        $confere="";
+        $dataForm = $request->all();
+        $tarefa = Tarefa::find($id);
+       
+        if(Tarefa::where('nomeTarefa',$request->nomeTarefa)->count()==1){
+            return redirect('tarefas/')->with(['errors'=>'Já existe essa tarefa na base de dados, favor escolher outro nome']);
+        }else{
+        $update = $tarefa->update($dataForm);
+        if($update)
+        {
+            return redirect('tarefas');
+        }
+        else{
+            return redirect('tarefas/{id}/editaedit', $id)->with(['errors'=> 'Falha ao editar']);
+            }
+        }
+    }
+
 }
