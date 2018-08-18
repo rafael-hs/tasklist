@@ -10,10 +10,21 @@ class TarefasController extends Controller
 
     public function index()
     {
-        $list_tarefas = Tarefa::all();
+        $list_tarefas = Tarefa::orderby('ordem', 'ASC')->get();
         return view('tarefasView.index',[
             'tarefas'=> $list_tarefas
         ]);
+    }
+    public function ordenacao()
+    {
+        $list_tarefas = Tarefa::orderby('ordem', 'ASC')->get();
+        $id = $_POST['tarefaId'];
+        $index = $_POST['tarefaIndex'];
+       
+        foreach ($list_tarefas as $tarefa) {
+            return Tarefa::where('id', '=', $id)->update(array('ordem' => $index));
+        }
+        
     }
 
     public function novoView(){
@@ -43,18 +54,21 @@ class TarefasController extends Controller
        return view('tarefasView.edit',['tarefa'=>$tarefa]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        
-        $dataForm = $request->all();
-        $validacao = new Tarefa;
-        $this->validate($request, $validacao->rules);  
-        $tarefa = Tarefa::find($id);
+        //dd($request->nameid);
+
+        //Tarefa::update($request->all());
+       $dataForm = $request->all();
+      
+        //dd($dataForm);
+        //  $validacao = new Tarefa;
+        // $this->validate($request, $validacao->rules);  
+        //$tarefa = Tarefa::find($request->nameid);
        
-        
-        $update = $tarefa->update($dataForm);
-       
-            return redirect('tarefas');
+         //$tarefa->update($dataForm);
+         Tarefa::find($request->id)->update($dataForm);
+         return redirect('tarefas');
         
         
     }

@@ -1,9 +1,11 @@
 @extends("template.app")
 @section("content")
 <div>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+       
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
             <div class="titulo">
                 <h1>Lista de Tarefas</h1>
             </div>
@@ -12,28 +14,27 @@
                     <h4>ID|Nome|Custo|Data Limite</h4>
                 </div>
                 
-            
-                    <div class="editandodados"></div>
-                    @foreach($tarefas as $tarefas)
-                    <ul class="list-group" style="">  
+                    <ul class="list-group" style="" id="lista">
+                    @foreach($tarefas as $tarefas)  
                     @if($tarefas->custo >= 1000)             
-                    <li class="list-group-item" style="background:#EEDD82;"> 
-                    
+                        <li class="list-group-item" style="background:#EEDD82;" id="{{$tarefas->id}}"> 
                     @else
-                    <li class="list-group-item">
+                        <li class="list-group-item" id="{{$tarefas->id}}">
                     @endif
                     {{$tarefas->id}} |  {{$tarefas->nomeTarefa}} | {{$tarefas->custo}} | {{$tarefas->dataLimite}}
                     <div class="btn-group" role="group" aria-label="...">
-                    <a href="{{url("/tarefas/$tarefas->id/editar")}}"><button type="button" nome="editar" class="btn btn-primary glyphicon glyphicon-pencil"  ></button> </a>
+                        <button type="button" nome="editar" class="btn btn-primary glyphicon glyphicon-pencil" data-toggle="modal" data-target="#edit" data-tarefaid="{{$tarefas->id}}" 
+                        data-tarefanome="{{$tarefas->nomeTarefa}}" data-tarefacusto="{{$tarefas->custo}}" data-tarefadata="{{$tarefas->dataLimite}}" ></button> 
                     <!-- data-toggle="modal" data-target="#exampleModal" data-whateverid="{{$tarefas->id}}" data-whatever="{{$tarefas->nomeTarefa}}" data-whatevercusto="{{$tarefas->custo}}" data-whateverdata="{{$tarefas->dataLimite}}" {{url("/tarefas/$tarefas->id/editar")}}-->
-                    <a href="{{url("/tarefas/$tarefas->id/delete")}}">  <button type="button" nome="apagar" class="btn btn-default glyphicon glyphicon-trash" ></button> </a>
-                    <!--{{url("/tarefas/$tarefas->id/delete")}}-->  </li>
+                        <a href="{{url("/tarefas/$tarefas->id/delete")}}" onclick="return confirm('Deseja realmente deletar??')">  <button type="button" nome="apagar" class="btn btn-default glyphicon glyphicon-trash" ></button> </a>
+                        <!--{{url("/tarefas/$tarefas->id/delete")}}-->  </li>
+                    @endforeach
                     </ul>
-                     @endforeach
+                    
             </div>
             
 
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                     <div class="modal-header">
@@ -46,7 +47,7 @@
                         {{csrf_field()}}
                         <div class="form-group">
                             <label for="recipient-name" class="control-label">Nome:</label>
-                            <input name="nome" type="text" class="form-control" id="recipient-name">
+                            <input name="nomeTarefa" type="text" class="form-control" id="recipient-name">
                         </div>
                         <div class="form-group">
                             <label for="message-text" class="control-label">Custo:</label>
@@ -54,9 +55,9 @@
                         </div>
                         <div class="form-group">
                             <label for="message-text2" class="control-label">Data Limite:</label>
-                            <input name="data" type="text2" class="form-control" id="recipient-data">
+                            <input name="dataLimite" type="text2" class="form-control" id="recipient-data">
                         </div>
-                        <input type="hidden" name="nameid" id="recipientid" value="">
+                        <input type="hidden" name="id" id="recipientid" value="">
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-danger">Editar</button>
@@ -73,12 +74,12 @@
         <a href="{{url('tarefas/novo')}}"><button type="button" class="btn btn-default glyphicon glyphicon-plus">Nova-tarefa</button></a>
     </div>
     <script>
-    $('#exampleModal').on('show.bs.modal', function (event) {
+    $('#edit').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) 
-    var recipient = button.data('whatever')
-    var recipientcusto = button.data('whatevercusto')
-    var recipientdata = button.data('whateverdata')
-    var recipeid = button.data('whateverid')
+    var recipient = button.data('tarefanome')
+    var recipientcusto = button.data('tarefacusto')
+    var recipientdata = button.data('tarefadata')
+    var recipeid = button.data('tarefaid')
      
     var modal = $(this)
     modal.find('.modal-title').text('Editar tarefa id:'+recipeid)
@@ -90,7 +91,30 @@
     </script>
     
     <script>
-        $('#lista').sortable();
+    $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+    });
+    $(function(){
+        $('#lista').sortable({
+            stop: function(){
+                $.map($(this).find('li'), function(el){
+                    var tarefaId = el.id;
+                    var tarefaIndex = $(el).index();
+                    
+                    
+                    $.ajax({
+                        url:'/tarefas',
+                        type: 'POST',
+                        dataType:'json',
+                        data: {tarefaId: tarefaId, tarefaIndex: tarefaIndex,},
+                          })
+                    });
+
+                }
+            });
+        });
     </script>
 </div>
 @endsection
