@@ -3,6 +3,14 @@
 @section("content")
     <div class="col-md-12">
         <h3>Editar tarefa<h3>
+        @if (isset($errors) && count($errors) > 0)
+        <div class="alert alert-danger">
+            @foreach($errors->all() as $error)
+                <p>{{$error}}</p>
+            @endforeach
+        </div>
+        @endif
+
         <a href="{{url('tarefas/')}}"><button style="margin-top: 5px; " class="btn btn-primary">Voltar</button></a>
     </div>
     

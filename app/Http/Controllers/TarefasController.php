@@ -22,16 +22,18 @@ class TarefasController extends Controller
 
     public function store(Request $request, Tarefa $tarefas)
     {   
+        //validação
+        $validacao = new Tarefa;
+        $this->validate($request, $validacao->rules);    
         $nregistros = Tarefa::count();
         $tarefas->nomeTarefa = $request->nomeTarefa;
         $tarefas->custo = $request->custo;
         $tarefas->dataLimite = $request->dataLimite;
-        $tarefas->ordem = $nregistros+1;
+        $tarefas->ordem = NULL;     
         $tarefas->save();
-        
-        
+        $tarefas->ordem=$tarefas->id;
+        $tarefas->save();
         return redirect("/tarefas")->with("message", "Tarefa criada com sucesso");
-        
     }
 
     public function editarView($id)
@@ -43,22 +45,35 @@ class TarefasController extends Controller
 
     public function update(Request $request, $id)
     {
-        $confere="";
+        
         $dataForm = $request->all();
+        $validacao = new Tarefa;
+        $this->validate($request, $validacao->rules);  
         $tarefa = Tarefa::find($id);
        
-        if(Tarefa::where('nomeTarefa',$request->nomeTarefa)->count()==1){
-            return redirect('tarefas/')->with(['errors'=>'Já existe essa tarefa na base de dados, favor escolher outro nome']);
-        }else{
+        
         $update = $tarefa->update($dataForm);
-        if($update)
+       
+            return redirect('tarefas');
+        
+        
+    }
+
+    public function delete($id)
+    {
+        $tarefa = Tarefa::find($id);
+        $delete = $tarefa->delete();
+
+        if($delete)
         {
+            return redirect("/tarefas")->with("message", "Tarefa deletada com sucesso");
+        }
+        else
+        {
+            return 'Falha ao deletar';
             return redirect('tarefas');
         }
-        else{
-            return redirect('tarefas/{id}/editaedit', $id)->with(['errors'=> 'Falha ao editar']);
-            }
-        }
+
     }
 
 }

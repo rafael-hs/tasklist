@@ -10,4 +10,5 @@ Route::group(["prefix" => "tarefas"], function() {
     Route::get("/{id}/editar","TarefasController@editarView");
     Route::post("/store","TarefasController@store");
     Route::put("/{id}/update","TarefasController@update");
+    Route::get('/{id}/delete',"TarefasController@delete");
 });
