@@ -21,7 +21,8 @@ class TarefasController extends Controller
         $id = $_POST['tarefaId'];
         $index = $_POST['tarefaIndex'];
        
-        foreach ($list_tarefas as $tarefa) {
+        foreach ($list_tarefas as $tarefa)
+        {
             return Tarefa::where('id', '=', $id)->update(array('ordem' => $index));
         }
         
@@ -39,7 +40,7 @@ class TarefasController extends Controller
         $nregistros = Tarefa::count();
         $tarefas->nomeTarefa = $request->nomeTarefa;
         $tarefas->custo = $request->custo;
-        $tarefas->dataLimite = $request->dataLimite;
+        $tarefas->dataLimite = \Carbon\Carbon::parse($request->dataLimite)->format('Y/m/d');
         $tarefas->ordem = NULL;     
         $tarefas->save();
         $tarefas->ordem=$tarefas->id;
@@ -56,19 +57,15 @@ class TarefasController extends Controller
 
     public function update(Request $request)
     {
-        //dd($request->nameid);
-
-        //Tarefa::update($request->all());
-       $dataForm = $request->all();
-      
-        //dd($dataForm);
-        //  $validacao = new Tarefa;
-        // $this->validate($request, $validacao->rules);  
-        //$tarefa = Tarefa::find($request->nameid);
-       
-         //$tarefa->update($dataForm);
-         Tarefa::find($request->id)->update($dataForm);
-         return redirect('tarefas');
+        
+        $tarefaAlterada = Tarefa::find($request->id);
+        
+        $tarefaAlterada->nomeTarefa = $request->nomeTarefa;
+        $tarefaAlterada->custo = $request->custo;
+        $tarefaAlterada->dataLimite = \Carbon\Carbon::parse($request->dataLimite)->format('Y/m/d');
+        $tarefaAlterada->save();
+        
+        return redirect('tarefas');
         
         
     }

@@ -17,7 +17,7 @@ class Tarefa extends Model
     public $rules = [
        'nomeTarefa'=> 'required|unique:tarefas|min:3|max:100',
          'custo'     => 'required|numeric',
-        'dataLimite'=> 'required|date'
+        'dataLimite'=> 'required|'
       ];
 
     protected $table = 'tarefas';
