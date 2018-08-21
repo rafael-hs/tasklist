@@ -18,7 +18,7 @@ class CriaTabelaTarefas extends Migration
             $table->string('nomeTarefa');
             $table->float('custo');
             $table->date('dataLimite');
-            $table->integer('ordem')->unique();
+            $table->integer('ordem');
             $table->timestamps();
         });
     }

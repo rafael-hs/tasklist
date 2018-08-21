@@ -20,6 +20,13 @@ return [
     | Database Connections
     |--------------------------------------------------------------------------
     |
+heroku database connection;
+DB_CONNECTION=mysql
+DB_HOST=us-cdbr-iron-east-01.cleardb.net
+DB_PORT=3306
+DB_DATABASE=heroku_3078ed200923a76
+DB_USERNAME=b56315a44933cc
+DB_PASSWORD=7fe75b68 
     | Here are each of the database connections setup for your application.
     | Of course, examples of configuring each database platform that is
     | supported by Laravel is shown below to make development simple.
